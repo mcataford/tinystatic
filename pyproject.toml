@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "blog"
+version = "0.0.0"
+description = ""
+authors = ["Marc Cataford <mcat@riseup.net>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Jinja2 = "^3.0.1"
+python-frontmatter = "^1.0.0"
+markdown2 = "^2.4.0"
+
+[tool.poetry.scripts]
+generate = 'src.blog.generate:run'
+
+[tool.poetry.dev-dependencies]
+black = "^21.7b0"
+mypy = "^0.910"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
