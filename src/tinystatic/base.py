@@ -13,8 +13,14 @@ PipelineOutputs = Dict[
     Union[PrepareEnvironmentStepOutput, CopyAssetsStepOutput, GeneratePagesStepOutput],
 ]
 
+CliContext = namedtuple("CliContext", ["cwd"])
+
+
+class PipelineException(Exception):
+    pass
+
 
 class PipelineStep(ABC):
     @abstractmethod
-    def run(self, previous_outputs: PipelineOutputs):
+    def run(self, previous_outputs: PipelineOutputs, cli_args: CliContext):
         raise NotImplementedError()

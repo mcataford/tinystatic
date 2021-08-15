@@ -23,7 +23,7 @@ class GeneratePagesStep(PipelineStep):
 
             yield content.relative_to(project_root)
 
-    def run(self, previous_outputs: PipelineOutputs) -> GeneratePagesStepOutput:
+    def run(self, previous_outputs: PipelineOutputs, _) -> GeneratePagesStepOutput:
         """
         Generate pages based on markdown content.
         """
