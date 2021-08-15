@@ -4,11 +4,6 @@ import shutil
 from tinystatic.logger import get_logger
 from tinystatic.base import PipelineStep, PipelineOutputs
 
-
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-STATIC_ASSETS_PATH = PROJECT_ROOT.joinpath(Path("_static"))
-
-
 class CopyStaticAssetsStep(PipelineStep):
     STEP_NAME = "CopyStaticAssets"
     logger = get_logger(STEP_NAME)
