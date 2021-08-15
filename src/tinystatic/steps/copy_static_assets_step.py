@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 import shutil
 
@@ -23,6 +22,6 @@ class CopyStaticAssetsStep(PipelineStep):
         for asset in static_path.iterdir():
             source = asset.relative_to(project_root)
             destination = Path("dist", asset.name)
-            self.logger.info(f"{source} -> {destination}")
+            self.logger.info("%s -> %s", source, destination)
 
             shutil.copy(source, destination)

@@ -1,7 +1,6 @@
 from collections import namedtuple
 from abc import ABC, abstractmethod
 from typing import Dict, Union
-import logging
 
 PrepareEnvironmentStepOutput = namedtuple(
     "PrepareEnvironmentStepOutput", ["project_root", "config"]

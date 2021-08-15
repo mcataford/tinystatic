@@ -1,7 +1,6 @@
-import toml
-
 from pathlib import Path
-from collections import namedtuple
+
+import toml
 
 from tinystatic.logger import get_logger
 from tinystatic.base import PipelineStep, PrepareEnvironmentStepOutput, PipelineOutputs
@@ -24,7 +23,7 @@ class PrepareEnvironmentStep(PipelineStep):
             config = toml.loads(config_file.read())
 
         self.logger.info(
-            f"Loaded config from {self.config_path.relative_to(self.project_root)}"
+            "Loaded config from %s", self.config_path.relative_to(self.project_root)
         )
 
         return PrepareEnvironmentStepOutput(
