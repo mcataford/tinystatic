@@ -14,14 +14,12 @@ class GeneratePagesStep(PipelineStep):
     logger = get_logger(STEP_NAME)
 
     @staticmethod
-    def _get_content(
-        content_path: Path, project_root: Path
-    ) -> Generator[Path, None, None]:
+    def _get_content(content_path: Path) -> Generator[Path, None, None]:
         for content in Path(content_path).iterdir():
             if content.suffix != ".md":
                 continue
 
-            yield content.relative_to(project_root)
+            yield content
 
     def run(self, previous_outputs: PipelineOutputs, _) -> GeneratePagesStepOutput:
         """
@@ -38,13 +36,14 @@ class GeneratePagesStep(PipelineStep):
 
         count = 0
 
-        for content_path in self._get_content(content_path, project_root):
-            target_path = Path("dist", *content_path.parts[1:]).with_suffix(".html")
+        for content_item_path in self._get_content(content_path):
+            relative_path = content_item_path.relative_to(content_path)
+            target_path = Path(project_root, "dist", relative_path.with_suffix(".html"))
             target_path.parent.mkdir(parents=True, exist_ok=True)
 
-            self.logger.info("%s  -> %s", content_path, target_path)
+            self.logger.info("%s  -> %s", content_item_path, target_path)
 
-            with open(content_path, "r") as infile:
+            with open(content_item_path, "r") as infile:
                 content_text = infile.read()
 
             header, content = frontmatter.parse(content_text)
