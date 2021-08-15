@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "blog"
+name = "tinystatic"
 version = "0.0.0"
 description = ""
 authors = ["Marc Cataford <mcat@riseup.net>"]
@@ -9,13 +9,21 @@ python = "^3.9"
 Jinja2 = "^3.0.1"
 python-frontmatter = "^1.0.0"
 markdown2 = "^2.4.0"
+toml = "^0.10.2"
+
+[tool.poe.tasks]
+lint = 'pylint src/**/*.py'
+format = 'black .'
 
 [tool.poetry.scripts]
-generate = 'src.blog.generate:run'
+generate = 'src.tinystatic.commands.generate:run'
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
 mypy = "^0.910"
+types-toml = "^0.1.5"
+pylint = "^2.9.6"
+poethepoet = "^0.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
