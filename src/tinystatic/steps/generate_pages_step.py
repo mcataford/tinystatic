@@ -5,8 +5,13 @@ from markdown2 import Markdown
 import frontmatter
 from jinja2 import Environment, FileSystemLoader
 
+<<<<<<< HEAD:src/tinystatic/steps/generate_pages_step.py
 from tinystatic.logger import get_logger
 from tinystatic.base import PipelineStep, GeneratePagesStepOutput, PipelineOutputs
+=======
+from .logger import get_logger
+from .base import PipelineStep, GeneratePagesStepOutput, PipelineOutputs
+>>>>>>> d4ea36206b06a1b6dcd0d6c629cf26ff1f3bdfba:src/blog/GeneratePagesStep.py
 
 
 class GeneratePagesStep(PipelineStep):
