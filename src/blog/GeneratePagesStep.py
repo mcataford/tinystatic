@@ -1,46 +1,47 @@
 from typing import Generator
 from pathlib import Path
-from collections import namedtuple
 
 from markdown2 import Markdown
 import frontmatter
 from jinja2 import Environment, FileSystemLoader
 
 from .logger import get_logger
-from .base import PipelineStep
-
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-
-TEMPLATE_PATH = PROJECT_ROOT.joinpath(Path("_templates"))
-CONTENT_PATH = PROJECT_ROOT.joinpath(Path("_content"))
-
-logger = get_logger("GeneratePages")
-
-StepOutput = namedtuple("GeneratePagesStepOutput", ["generated_count"])
+from .base import PipelineStep, GeneratePagesStepOutput, PipelineOutputs
 
 
 class GeneratePagesStep(PipelineStep):
-    def _get_content(self) -> Generator[Path, None, None]:
-        for content in CONTENT_PATH.iterdir():
+    STEP_NAME = "GeneratePagesStep"
+    logger = get_logger(STEP_NAME)
+
+    def _get_content(
+        self, content_path: Path, project_root: Path
+    ) -> Generator[Path, None, None]:
+        for content in Path(content_path).iterdir():
             if content.suffix != ".md":
                 continue
 
-            yield content.relative_to(PROJECT_ROOT)
+            yield content.relative_to(project_root)
 
-    def run(self) -> StepOutput:
+    def run(self, previous_outputs: PipelineOutputs) -> GeneratePagesStepOutput:
         """
         Generate pages based on markdown content.
         """
-        env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
+        config = previous_outputs["PrepareEnvironmentStep"].config
+        project_root = previous_outputs["PrepareEnvironmentStep"].project_root
+
+        content_path = Path(project_root, config["paths"]["content_path"])
+        templates_path = Path(project_root, config["paths"]["templates_path"])
+
+        env = Environment(loader=FileSystemLoader(templates_path))
         markdown_converter = Markdown()
 
         count = 0
 
-        for content_path in self._get_content():
+        for content_path in self._get_content(content_path, project_root):
             target_path = Path("dist", *content_path.parts[1:]).with_suffix(".html")
             target_path.parent.mkdir(parents=True, exist_ok=True)
 
-            logger.info(f"{content_path} -> {target_path}")
+            self.logger.info(f"{content_path} -> {target_path}")
 
             with open(content_path, "r") as infile:
                 content_text = infile.read()
@@ -59,6 +60,6 @@ class GeneratePagesStep(PipelineStep):
 
             count += 1
 
-        logger.info(f"Generated {count} files")
+        self.logger.info(f"Generated {count} files")
 
-        return StepOutput(generated_count=count)
+        return GeneratePagesStepOutput(generated_count=count)
