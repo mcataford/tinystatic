@@ -7,7 +7,7 @@ from tinystatic.steps.copy_static_assets_step import CopyStaticAssetsStep
 pipeline = [PrepareEnvironmentStep(), GeneratePagesStep(), CopyStaticAssetsStep()]
 
 
-def run():
+def generate():
     outputs = {}
 
     for step in pipeline:
