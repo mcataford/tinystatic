@@ -45,6 +45,21 @@ Test post
     )
 
 
+def test_skips_non_markdown_files(
+    tmpdir, prepare_env_step, generate_pages_step, with_sample_content
+):
+    Path(tmpdir, "content", "non-markdown.txt").write_text("wow")
+
+    cli_args = CliContext(cwd=tmpdir)
+    prepare_env_outputs = prepare_env_step.run({}, cli_args)
+
+    previous_outputs = {prepare_env_step.STEP_NAME: prepare_env_outputs}
+
+    outputs = generate_pages_step.run(previous_outputs, cli_args)
+
+    assert outputs.generated_count == 1
+
+
 def test_generates_content(
     tmpdir, prepare_env_step, generate_pages_step, with_sample_content
 ):
