@@ -10,6 +10,11 @@ from tinystatic.base import (
     PipelineOutputs,
 )
 
+class MissingConfigFileException(Exception):
+    pass
+
+class InvalidConfigFileException(Exception):
+    pass
 
 class PrepareEnvironmentStep(PipelineStep):
     STEP_NAME = "PrepareEnvironmentStep"
@@ -20,9 +25,15 @@ class PrepareEnvironmentStep(PipelineStep):
     ) -> PrepareEnvironmentStepOutput:
         project_root = Path(cli_args.cwd)
         config_path = project_root.joinpath("site_config.toml")
+        
+        if not config_path.exists():
+            raise MissingConfigFileException(f"No config file found at {config_path}")
 
         with open(config_path, "r") as config_file:
-            config = toml.loads(config_file.read())
+            try:
+                config = toml.loads(config_file.read())
+            except Exception as exc:
+                raise InvalidConfigFileException() from exc
 
         self.logger.info("Loaded config from %s", config_path.relative_to(project_root))
 
