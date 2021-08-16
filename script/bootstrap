@@ -1,0 +1,19 @@
+# Based on conventions from https://github.com/github/scripts-to-rule-them-all
+# script/bootstrap: Resolve all dependencies that the application requires to
+# run.
+
+# If not in CI, we have to install the correct python versions
+if [[ -z $CI ]]; then
+    # pyenv update
+    pyenv install --skip-existing || return
+else
+    if [[ ! -f `pwd`/.python-version ]]; then
+        echo "You are missing a .python-version file."
+        echo "pyenv will give you bizarre errors without this!"
+        echo "You need to create this file to continue."
+        return
+    fi
+fi
+
+# Poetry
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -

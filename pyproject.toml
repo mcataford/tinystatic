@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "tinystatic"
+version = "0.0.0"
+description = ""
+authors = ["Marc Cataford <mcat@riseup.net>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Jinja2 = "^3.0.1"
+python-frontmatter = "^1.0.0"
+markdown2 = "^2.4.0"
+toml = "^0.10.2"
+
+[tool.poe.tasks]
+lint = 'pylint src/**/*.py'
+format = 'black .'
+test = 'pytest --cov-report xml --cov=src tests/'
+
+[tool.poetry.scripts]
+tinystatic = 'tinystatic.cli:tinystatic'
+
+[tool.poetry.dev-dependencies]
+black = "^21.7b0"
+mypy = "^0.910"
+types-toml = "^0.1.5"
+pylint = "^2.9.6"
+poethepoet = "^0.10.0"
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
