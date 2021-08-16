@@ -14,7 +14,7 @@ toml = "^0.10.2"
 [tool.poe.tasks]
 lint = 'pylint src/**/*.py'
 format = 'black .'
-test = 'pytest --cov-report term --cov=src tests/'
+test = 'pytest --cov-report xml --cov=src tests/'
 
 [tool.poetry.scripts]
 tinystatic = 'tinystatic.cli:tinystatic'
