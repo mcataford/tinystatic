@@ -16,8 +16,7 @@ class CopyStaticAssetsStep(PipelineStep):
         static_path = Path(project_root, config["paths"]["static_path"])
 
         for asset in static_path.iterdir():
-            source = asset.relative_to(project_root)
-            destination = Path("dist", asset.name)
-            self.logger.info("%s -> %s", source, destination)
+            destination = Path(project_root, "dist", asset.name)
+            self.logger.info("%s -> %s", asset, destination)
 
-            shutil.copy(source, destination)
+            shutil.copy(asset, destination)
