@@ -1,6 +1,7 @@
 # Tinystatic
 
 [![CICD](https://github.com/mcataford/tinystatic/actions/workflows/main.yml/badge.svg)](https://github.com/mcataford/tinystatic/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/mcataford/tinystatic/branch/main/graph/badge.svg?token=EG5UGO5R3W)](https://codecov.io/gh/mcataford/tinystatic)
 
 ## Overview
 
