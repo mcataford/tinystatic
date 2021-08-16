@@ -1,0 +1,20 @@
+name: CICD
+
+on:
+  push:
+    branches: main
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.7
+      - run: |
+          poetry install 
