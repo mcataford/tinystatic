@@ -21,7 +21,7 @@ jobs:
           poetry-version: 1.1.7
       - name: Get tag
         id: get-tag
-        run: echo ::set-ouput name=tag::"0.0.1" #${GITHUB_REF#refs/*/v}
+        run: echo ::set-output name=tag::"0.0.1" #${GITHUB_REF#refs/*/v}
       - name: Prepare
         run: |
           poetry version ${{ steps.get-tag.outputs.tag }}
