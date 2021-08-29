@@ -24,7 +24,6 @@ jobs:
         run: echo ::set-ouput name=tag::"0.0.1" #${GITHUB_REF#refs/*/v}
       - name: Prepare
         run: |
-          poetry install
           poetry version ${{ steps.get-tag.outputs.tag }}
           poetry build
       - uses: softprops/action-gh-release@v1
