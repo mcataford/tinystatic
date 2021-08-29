@@ -1,4 +1,0 @@
-[paths]
-static_path = "_static"
-content_path = "_content"
-templates_path = "_templates"
