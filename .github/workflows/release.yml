@@ -21,15 +21,16 @@ jobs:
           poetry-version: 1.1.7
       - name: Get tag
         id: get-tag
-        run: echo ::set-ouput name=tag::0.0.1 #${GITHUB_REF#refs/*/v}
+        run: echo ::set-ouput name=tag::"0.0.1" #${GITHUB_REF#refs/*/v}
       - name: Prepare
         run: |
           poetry install
           poetry version ${{ steps.get-tag.outputs.tag }}
           poetry build
-      - uses: actions/upload-artifact@v2
+      - uses: softprops/action-gh-release@v1
         with:
-          name: release-artifacts
-          path: |
-            ./dist/*.whl
-            ./dist/*.tar.gz
+          tag_name: ${{ github.ref }}
+          draft: true
+          files: ./dist/*
+
+
