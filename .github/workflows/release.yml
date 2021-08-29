@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.7
+      - name: Get tag
+        id: get-tag
+        run: echo ::set-ouput name=tag::${GITHUB_REF#refs/*/v}
+      - run: |
+        poetry install
+        poetry version ${{ steps.get-tag.outputs.tag }}
+        poetry build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: release-artifacts
+          path: |
+            ./dist/*.whl
+            ./dist/*.tar.gz
