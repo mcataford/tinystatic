@@ -22,10 +22,11 @@ jobs:
       - name: Get tag
         id: get-tag
         run: echo ::set-ouput name=tag::0.0.1 #${GITHUB_REF#refs/*/v}
-      - run: |
-        poetry install
-        poetry version ${{ steps.get-tag.outputs.tag }}
-        poetry build
+      - name: Prepare
+        run: |
+          poetry install
+          poetry version ${{ steps.get-tag.outputs.tag }}
+          poetry build
       - uses: actions/upload-artifact@v2
         with:
           name: release-artifacts
