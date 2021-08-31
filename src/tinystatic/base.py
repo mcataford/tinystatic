@@ -1,5 +1,4 @@
 from collections import namedtuple
-from abc import ABC, abstractmethod
 from typing import Dict, Union
 
 PrepareEnvironmentStepOutput = namedtuple(
@@ -18,9 +17,3 @@ CliContext = namedtuple("CliContext", ["cwd"])
 
 class PipelineException(Exception):
     pass
-
-
-class PipelineStep(ABC):
-    @abstractmethod
-    def run(self, previous_outputs: PipelineOutputs, cli_args: CliContext):
-        raise NotImplementedError()

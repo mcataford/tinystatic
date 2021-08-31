@@ -1,11 +1,9 @@
 from copy import deepcopy
 
 from tinystatic.base import CliContext, PipelineException
-from tinystatic.steps.prepare_environment_step import PrepareEnvironmentStep
-from tinystatic.steps.generate_pages_step import GeneratePagesStep
-from tinystatic.steps.copy_static_assets_step import CopyStaticAssetsStep
+from tinystatic.steps import prepare_environment, generate_pages, copy_static_assets
 
-pipeline = [PrepareEnvironmentStep(), GeneratePagesStep(), CopyStaticAssetsStep()]
+pipeline = [prepare_environment, generate_pages, copy_static_assets]
 
 
 def build(args):
