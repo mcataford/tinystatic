@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from tinystatic.base import CliContext
+from tinystatic.steps import prepare_environment
 
 
 @pytest.fixture
@@ -34,11 +35,11 @@ def test_copies_files_from_the_static_asset_dir(
     tmpdir, with_sample_assets, prepare_env_step, copy_static_assets_step
 ):
     cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step.run({}, cli_args)
+    prepare_env_outputs = prepare_env_step({}, cli_args)
 
-    previous_outputs = {prepare_env_step.STEP_NAME: prepare_env_outputs}
+    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
 
-    outputs = copy_static_assets_step.run(previous_outputs, cli_args)
+    outputs = copy_static_assets_step(previous_outputs, cli_args)
 
     assert outputs == None
     assert [path.name for path in Path(tmpdir, "static").iterdir()] == ["styles.css"]

@@ -3,10 +3,9 @@ import pytest
 from pathlib import Path
 
 from tinystatic.base import CliContext
-from tinystatic.steps.prepare_environment_step import (
+from tinystatic.steps.prepare_environment import (
     InvalidConfigFileException,
     MissingConfigFileException,
-    PrepareEnvironmentStep,
 )
 
 
@@ -33,7 +32,7 @@ def mock_config_dict():
 
 def test_fails_if_config_file_not_found(tmpdir, prepare_env_step):
     with pytest.raises(MissingConfigFileException):
-        prepare_env_step.run({}, CliContext(cwd=tmpdir))
+        prepare_env_step({}, CliContext(cwd=tmpdir))
 
 
 def test_fails_if_config_file_exists_but_invalid_toml(tmpdir, prepare_env_step):
@@ -42,7 +41,7 @@ def test_fails_if_config_file_exists_but_invalid_toml(tmpdir, prepare_env_step):
     config_file.write_text("invalid-config-what-is-this-even-anymore")
 
     with pytest.raises(InvalidConfigFileException):
-        prepare_env_step.run({}, CliContext(cwd=tmpdir))
+        prepare_env_step({}, CliContext(cwd=tmpdir))
 
 
 def test_honors_working_directory_overrides_via_cli_context(
@@ -52,7 +51,7 @@ def test_honors_working_directory_overrides_via_cli_context(
     config_file.parent.mkdir(parents=True)
     config_file.write_text(mock_config)
 
-    output = prepare_env_step.run({}, CliContext(cwd=Path(tmpdir, "subdir")))
+    output = prepare_env_step({}, CliContext(cwd=Path(tmpdir, "subdir")))
 
     assert output.project_root == Path(tmpdir, "subdir")
     assert output.config == mock_config_dict
@@ -65,7 +64,7 @@ def test_outputs_project_root_and_config_file(
 
     config_file.write_text(mock_config)
 
-    output = prepare_env_step.run({}, CliContext(cwd=tmpdir))
+    output = prepare_env_step({}, CliContext(cwd=tmpdir))
 
     assert output.project_root == tmpdir
     assert output.config == mock_config_dict

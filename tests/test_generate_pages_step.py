@@ -3,6 +3,7 @@ import pytest
 from pathlib import Path
 
 from tinystatic.base import CliContext
+from tinystatic.steps import prepare_environment
 
 
 @pytest.fixture
@@ -51,11 +52,11 @@ def test_skips_non_markdown_files(
     Path(tmpdir, "content", "non-markdown.txt").write_text("wow")
 
     cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step.run({}, cli_args)
+    prepare_env_outputs = prepare_env_step({}, cli_args)
 
-    previous_outputs = {prepare_env_step.STEP_NAME: prepare_env_outputs}
+    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
 
-    outputs = generate_pages_step.run(previous_outputs, cli_args)
+    outputs = generate_pages_step(previous_outputs, cli_args)
 
     assert outputs.generated_count == 1
 
@@ -64,11 +65,11 @@ def test_generates_content(
     tmpdir, prepare_env_step, generate_pages_step, with_sample_content
 ):
     cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step.run({}, cli_args)
+    prepare_env_outputs = prepare_env_step({}, cli_args)
 
-    previous_outputs = {prepare_env_step.STEP_NAME: prepare_env_outputs}
+    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
 
-    outputs = generate_pages_step.run(previous_outputs, cli_args)
+    outputs = generate_pages_step(previous_outputs, cli_args)
 
     assert outputs.generated_count == 1
     assert (
