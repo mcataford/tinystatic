@@ -15,8 +15,21 @@ def tinystatic():
     parser = argparse.ArgumentParser(
         description="Generate quick static websites from markdown."
     )
-    parser.add_argument("command", type=str, choices=list(COMMAND_HANDLERS.keys()))
-    parser.add_argument("--cwd", type=str, default=str(Path.cwd()))
+    subparsers = parser.add_subparsers()
+
+    # Build
+    build_subparser = subparsers.add_parser("build")
+    build_subparser.set_defaults(command="build")
+    build_subparser.add_argument(
+        "--cwd",
+        type=Path,
+        default=str(Path.cwd()),
+        help="Project root (current directory if not specified)",
+    )
+
+    # Init command
+    init_subparser = subparsers.add_parser("init")
+    init_subparser.set_defaults(command="init")
 
     args = parser.parse_args()
 
