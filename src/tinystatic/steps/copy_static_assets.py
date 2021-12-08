@@ -1,18 +1,19 @@
 from pathlib import Path
 import shutil
 
-from tinystatic.logger import get_logger
-from tinystatic.base import PipelineOutputs
+from tinystatic.core.logger import get_logger
 
 STEP_NAME = "CopyStaticAssets"
 logger = get_logger(STEP_NAME)
 
 
-def run(previous_outputs: PipelineOutputs, _):
-    project_root = previous_outputs["PrepareEnvironmentStep"].project_root
-    config = previous_outputs["PrepareEnvironmentStep"].config
+def run(stash):
+    project_root = stash["cwd"]
+    config = stash["config"]
 
     static_path = Path(project_root, config["paths"]["static_path"])
+
+    Path(project_root, "dist").mkdir(parents=True, exist_ok=True)
 
     for asset in static_path.iterdir():
         destination = Path(project_root, "dist", asset.name)

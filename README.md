@@ -16,8 +16,7 @@ releases](https://github.com/mcataford/tinystatic/releases).
 
 ### Configuration
 
-You should have a `site-config.toml` configuration file at the root of your project. In it, you will define where
-`tinystatic` can find your content, page templates and static assets:
+You should have a `site-config.toml` configuration file at the root of your project.
 
 ```
 # site_config.toml
@@ -26,9 +25,18 @@ You should have a `site-config.toml` configuration file at the root of your proj
 content   = "path/to/where/I/store/markdown"
 static    = "path/to/styles"
 templates = "path/to/my/templates"
+
+[pipeline]
+steps = [
+    "tinystatic.steps.generate_pages",
+    "tinystatic.steps.copy_static_assets",
+    "my_cool_custom_step"
+]
 ```
 
 Once this is set up, your are one `tinystatic build` away from a statically generated site.
+
+To learn more, check out the [documentation](./docs).
 
 ## Contributing
 

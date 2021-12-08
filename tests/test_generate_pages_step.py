@@ -2,76 +2,63 @@ import pytest
 
 from pathlib import Path
 
-from tinystatic.base import CliContext
-from tinystatic.steps import prepare_environment
+from tinystatic.base import tinystatic
 
 
-@pytest.fixture
-def with_sample_content(tmpdir):
-    config = """
+@pytest.fixture(autouse=True)
+def with_sample_content(set_up_files):
+    files = {
+        "site_config.toml": """
 [paths]
 static_path = 'static'
 content_path = 'content'
 templates_path = 'templates'
-    """
-
-    config_file = Path(tmpdir, "site_config.toml")
-    config_file.write_text(config)
-
-    static_path = Path(tmpdir, "static")
-    static_path.mkdir(parents=True)
-
-    templates_path = Path(tmpdir, "templates")
-    templates_path.mkdir(parents=True)
-
-    content_path = Path(tmpdir, "content")
-    content_path.mkdir(parents=True)
-
-    Path(templates_path, "test.j2").write_text(
-        """
+[pipeline]
+steps = [
+    "tinystatic.steps.generate_pages"
+]
+    """,
+        "static/styles.css": "",
+        "templates/test.j2": """
 Template!
 {{ data }}
-    """
-    )
-
-    Path(content_path, "post.md").write_text(
-        """
+    """,
+        "content/post.md": """
 ---
 title: Test content
 template: test
 ---
 
 Test post
-    """
-    )
+    """,
+    }
+
+    set_up_files(files)
 
 
-def test_skips_non_markdown_files(
-    tmpdir, prepare_env_step, generate_pages_step, with_sample_content
-):
-    Path(tmpdir, "content", "non-markdown.txt").write_text("wow")
+def test_skips_non_markdown_files(tmpdir, set_up_files, patched_cli_args):
+    set_up_files({"content/non-markdown.txt": "wow"})
 
-    cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step({}, cli_args)
+    with patched_cli_args(["tinystatic", "build", "--cwd", str(tmpdir)]):
+        tinystatic()
 
-    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
+    original_files = [
+        Path(file).relative_to(tmpdir) for file in Path(tmpdir, "content").iterdir()
+    ]
 
-    outputs = generate_pages_step(previous_outputs, cli_args)
+    generated_files = [
+        Path(file).relative_to(tmpdir) for file in Path(tmpdir, "dist").iterdir()
+    ]
 
-    assert outputs.generated_count == 1
+    # Not counting the added textfile.
+    assert len(generated_files) == len(original_files) - 1
 
 
-def test_generates_content(
-    tmpdir, prepare_env_step, generate_pages_step, with_sample_content
-):
-    cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step({}, cli_args)
+def test_generates_content(tmpdir, patched_cli_args):
 
-    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
+    with patched_cli_args(["tinystatic", "build", "--cwd", str(tmpdir)]):
+        tinystatic()
 
-    outputs = generate_pages_step(previous_outputs, cli_args)
-
-    assert outputs.generated_count == 1
     assert (
         Path(tmpdir, "dist", "post.html").read_text().strip()
         == """
