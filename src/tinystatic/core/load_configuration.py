@@ -1,7 +1,7 @@
-import toml
-
 from typing import Optional, Union
 from pathlib import Path
+
+import toml
 
 
 class MissingConfigFileException(Exception):
