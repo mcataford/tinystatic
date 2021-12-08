@@ -17,7 +17,7 @@ format = 'black .'
 test = 'pytest --cov-report xml --cov=src tests/'
 
 [tool.poetry.scripts]
-tinystatic = 'tinystatic.cli:tinystatic'
+tinystatic = 'tinystatic.base:tinystatic'
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"

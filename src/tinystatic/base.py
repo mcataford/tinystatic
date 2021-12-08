@@ -1,19 +1,21 @@
-from collections import namedtuple
-from typing import Dict, Union
+import argparse
+from pathlib import Path
 
-PrepareEnvironmentStepOutput = namedtuple(
-    "PrepareEnvironmentStepOutput", ["project_root", "config"]
-)
-CopyAssetsStepOutput = namedtuple("CopyStaticAssetsStepOutput", "")
-GeneratePagesStepOutput = namedtuple("GeneratePagesStepOutput", ["generated_count"])
-
-PipelineOutputs = Dict[
-    str,
-    Union[PrepareEnvironmentStepOutput, CopyAssetsStepOutput, GeneratePagesStepOutput],
-]
-
-CliContext = namedtuple("CliContext", ["cwd"])
+from tinystatic.core.load_configuration import load_configuration
+from tinystatic.commands import build
 
 
-class PipelineException(Exception):
-    pass
+def tinystatic():
+    commands = {"build": build}
+
+    parser = argparse.ArgumentParser(
+        description="Generate quick static websites from markdown."
+    )
+    parser.add_argument("command", type=str, choices=list(commands.keys()))
+    parser.add_argument("--cwd", type=str, default=str(Path.cwd()))
+
+    args = parser.parse_args()
+
+    config = load_configuration(project_root=args.cwd)
+
+    commands[args.command](cwd=args.cwd, config=config)

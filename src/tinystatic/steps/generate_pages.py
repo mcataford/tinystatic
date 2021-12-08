@@ -5,8 +5,7 @@ from markdown2 import Markdown
 import frontmatter
 from jinja2 import Environment, FileSystemLoader
 
-from tinystatic.logger import get_logger
-from tinystatic.base import GeneratePagesStepOutput, PipelineOutputs
+from tinystatic.core.logger import get_logger
 
 STEP_NAME = "GeneratePagesStep"
 logger = get_logger(STEP_NAME)
@@ -20,12 +19,14 @@ def _get_content(content_path: Path) -> Generator[Path, None, None]:
         yield content
 
 
-def run(previous_outputs: PipelineOutputs, _) -> GeneratePagesStepOutput:
+def run(stash):
     """
     Generate pages based on markdown content.
     """
-    config = previous_outputs["PrepareEnvironmentStep"].config
-    project_root = previous_outputs["PrepareEnvironmentStep"].project_root
+
+    # Extract data from stash.
+    config = stash["config"]
+    project_root = stash["cwd"]
 
     content_path = Path(project_root, config["paths"]["content_path"])
     templates_path = Path(project_root, config["paths"]["templates_path"])
@@ -60,5 +61,3 @@ def run(previous_outputs: PipelineOutputs, _) -> GeneratePagesStepOutput:
         count += 1
 
     logger.info("Generated %s files", count)
-
-    return GeneratePagesStepOutput(generated_count=count)
