@@ -2,44 +2,52 @@ from pathlib import Path
 
 import pytest
 
-from tinystatic.base import CliContext
-from tinystatic.steps import prepare_environment
+from tinystatic.base import tinystatic
+from tinystatic.core.runner import runner
 
 
 @pytest.fixture
-def with_sample_assets(tmpdir):
-    config = """
+def with_sample_assets(set_up_files):
+    files = {
+        "site_config.toml": """
 [paths]
 static_path = 'static'
 content_path = 'content'
 templates_path = 'templates'
-    """
+[pipeline]
+steps = [
+    "tinystatic.steps.copy_static_assets"
+]
+    """,
+        "static/styles.css": "static-static-static",
+        "templates/template.j2": "",
+        "content/content.md": "",
+    }
 
-    config_file = Path(tmpdir, "site_config.toml")
-    config_file.write_text(config)
-
-    static_path = Path(tmpdir, "static")
-    static_path.mkdir(parents=True)
-
-    templates_path = Path(tmpdir, "templates")
-    templates_path.mkdir(parents=True)
-
-    content_path = Path(tmpdir, "content")
-    content_path.mkdir(parents=True)
-
-    Path(static_path, "styles.css").write_text("static-static-static")
-    Path(tmpdir, "dist").mkdir(parents=True)
+    set_up_files(files)
 
 
 def test_copies_files_from_the_static_asset_dir(
-    tmpdir, with_sample_assets, prepare_env_step, copy_static_assets_step
+    tmpdir, with_sample_assets, patched_cli_args
 ):
-    cli_args = CliContext(cwd=tmpdir)
-    prepare_env_outputs = prepare_env_step({}, cli_args)
+    with patched_cli_args(["tinystatic", "build", "--cwd", str(tmpdir)]):
+        tinystatic()
 
-    previous_outputs = {prepare_environment.STEP_NAME: prepare_env_outputs}
+    originals = [
+        file.relative_to(Path(tmpdir, "static"))
+        for file in Path(tmpdir, "static").iterdir()
+    ]
+    copied = [
+        file.relative_to(Path(tmpdir, "dist"))
+        for file in Path(tmpdir, "dist").iterdir()
+    ]
 
-    outputs = copy_static_assets_step(previous_outputs, cli_args)
+    # Paths are the same.
+    assert originals == copied
 
-    assert outputs == None
-    assert [path.name for path in Path(tmpdir, "static").iterdir()] == ["styles.css"]
+    # Contents are the same.
+    for file in originals:
+        assert (
+            Path(tmpdir, "static", file).read_text()
+            == Path(tmpdir, "dist", file).read_text()
+        )

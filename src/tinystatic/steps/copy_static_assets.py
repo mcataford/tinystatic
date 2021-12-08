@@ -13,6 +13,8 @@ def run(stash):
 
     static_path = Path(project_root, config["paths"]["static_path"])
 
+    Path(project_root, "dist").mkdir(parents=True, exist_ok=True)
+
     for asset in static_path.iterdir():
         destination = Path(project_root, "dist", asset.name)
         logger.info("%s -> %s", asset, destination)

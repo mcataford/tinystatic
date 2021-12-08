@@ -11,6 +11,7 @@ def tinystatic():
     routes the CLI call to the right place based on parsed arguments
     and calls the command-specific handler.
     """
+
     parser = argparse.ArgumentParser(
         description="Generate quick static websites from markdown."
     )
