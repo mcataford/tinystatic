@@ -13,3 +13,6 @@ def build(*, cwd: str, config):
     pipeline = [import_module(step) for step in config["pipeline"]["steps"]]
 
     runner(pipeline, stash_preload)
+
+
+COMMAND_HANDLERS = {"build": build}
