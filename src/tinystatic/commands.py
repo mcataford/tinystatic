@@ -8,7 +8,7 @@ import toml
 from tinystatic.core.runner import runner
 
 
-def init():
+def init(**kwargs):
     """
     Sets up scaffolding for a new static site project.
     If the active directory is not empty, stops early.
@@ -18,13 +18,11 @@ def init():
 
     logger = logging.getLogger("Initialize")
 
-    cwd = Path.cwd()
-
-    if any(cwd.iterdir()):
-        logger.warning("%s is not empty, stopping.", cwd)
+    if any(Path(kwargs["cwd"]).iterdir()):
+        logger.warning("%s is not empty, stopping.", kwargs["cwd"])
         sys.exit(1)
 
-    logger.info("Using %s as project root", cwd)
+    logger.info("Using %s as project root", kwargs["cwd"])
 
     base_config = {
         "paths": {
@@ -36,23 +34,23 @@ def init():
     }
 
     for dirname in base_config["paths"].values():
-        dirpath = Path(cwd, dirname)
+        dirpath = Path(kwargs["cwd"], dirname)
         dirpath.mkdir(parents=True)
         logger.info("Created %s", dirpath)
 
-    config_path = Path(cwd, "site_config.toml")
+    config_path = Path(kwargs["cwd"], "site_config.toml")
     config_path.write_text(toml.dumps(base_config))
     logger.info("Created %s", config_path)
 
 
-def build(*, cwd: str, config):
+def build(**kwargs):
     """
     Runs the pipeline defined in the provided configuration.
     """
 
-    stash_preload = {"cwd": cwd, "config": config}
+    stash_preload = {"cwd": kwargs["cwd"], "config": kwargs["config"]}
 
-    pipeline = [import_module(step) for step in config["pipeline"]["steps"]]
+    pipeline = [import_module(step) for step in kwargs["config"]["pipeline"]["steps"]]
 
     runner(pipeline, stash_preload)
 

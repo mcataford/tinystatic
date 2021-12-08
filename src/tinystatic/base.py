@@ -20,19 +20,22 @@ def tinystatic():
     # Build
     build_subparser = subparsers.add_parser("build")
     build_subparser.set_defaults(command="build")
-    build_subparser.add_argument(
+
+    # Init command
+    init_subparser = subparsers.add_parser("init")
+    init_subparser.set_defaults(command="init")
+
+    parser.add_argument(
         "--cwd",
         type=Path,
         default=str(Path.cwd()),
         help="Project root (current directory if not specified)",
     )
 
-    # Init command
-    init_subparser = subparsers.add_parser("init")
-    init_subparser.set_defaults(command="init")
-
     args = parser.parse_args()
 
-    config = load_configuration(project_root=args.cwd)
+    config = None
+    if args.command != "init":
+        config = load_configuration(project_root=args.cwd)
 
     COMMAND_HANDLERS[args.command](cwd=args.cwd, config=config)
