@@ -20,8 +20,6 @@ each step to verify that any assumptions made on the stash are true -- it does n
 Once your step is implemented, you can include it in your pipeline via the `pipeline.steps` parameter:
 
 ```toml
-...
-
 [pipeline]
 steps = [
     "my_cool_step"
