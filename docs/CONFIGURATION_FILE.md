@@ -5,15 +5,14 @@ following layout:
 
 ```toml
 [paths]
-content = where/markdown/content/lives
-templates = where/templates/live
-static = where/static/assets/live
+content = "where/markdown/content/lives"
+templates = "where/templates/live"
+static = "where/static/assets/live"
 
 [pipeline]
 steps = [
-    step1,
-    step2,
-    ...
+    "step1",
+    "step2"
 ]
 ```
 

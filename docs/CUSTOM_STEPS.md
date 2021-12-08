@@ -24,8 +24,7 @@ Once your step is implemented, you can include it in your pipeline via the `pipe
 
 [pipeline]
 steps = [
-    ...steps,
-    my_cool_step
+    "my_cool_step"
 ]
 ```
 
