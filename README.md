@@ -16,7 +16,8 @@ releases](https://github.com/mcataford/tinystatic/releases).
 
 ### Configuration
 
-You should have a `site-config.toml` configuration file at the root of your project.
+You should have a `site-config.toml` configuration file at the root of your project. You can generate one via
+`tinystatic init`.
 
 ```
 # site_config.toml
