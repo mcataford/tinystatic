@@ -55,7 +55,7 @@ jobs:
           poetry install
       - name: Tests
         run: |
-          poetry run poe test
+          poetry run poe test-cov
       - uses: actions/upload-artifact@v2
         with:
           name: coverage-report
