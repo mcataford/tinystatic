@@ -15,7 +15,7 @@ toml = "^0.10.2"
 lint = 'pylint src/**/*.py'
 format = 'black .'
 test = 'pytest --cov=src tests/'
-test-cov = 'pytest --cov-report xml --cov=src tests/'
+test-cov = 'pytest --cov-report xml --cov=src tests/ -s'
 
 
 [tool.poetry.scripts]
