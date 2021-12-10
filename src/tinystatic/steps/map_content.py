@@ -1,17 +1,11 @@
 from pathlib import Path
-from typing import Generator, List
+from typing import List
 
 import frontmatter
 
+from tinystatic.utils import get_content_item_paths
+
 STEP_NAME = "Map content"
-
-
-def get_content(content_path: Path) -> Generator[Path, None, None]:
-    for content_item_path in content_path.iterdir():
-        if content_item_path.suffix != ".md":
-            continue
-
-        yield content_item_path
 
 
 def get_metadata(item_path: Path, included_keys: List[str]) -> str:
@@ -44,7 +38,7 @@ def run(stash):
 
     content_map = {}
 
-    for item_path in get_content(full_content_path):
+    for item_path in get_content_item_paths(full_content_path):
         content_map[str(item_path.relative_to(full_content_path))] = get_metadata(
             item_path, included_metadata
         )
