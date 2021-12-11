@@ -64,7 +64,7 @@ def test_map_content_ignores_keys_not_included_in_inclusion_list(
     ) as mocked_step:
         tinystatic()
 
-    mock_step_args = mocked_step.call_args.args[0]
+    mock_step_args = mocked_step.call_args[0][0]
 
     assert "key3" not in mock_step_args["content_map"]["post.md"]
 
@@ -75,7 +75,6 @@ def test_map_content_includes_configured_keys(tmpdir, patched_cli_args):
     ) as mocked_step:
         tinystatic()
 
-    mock_step_args = mocked_step.call_args.args[0]
+    mock_step_args = mocked_step.call_args[0][0]
     
-    print(mocked_step.call_args.args)
     assert mock_step_args["content_map"] == {"post.md": {"key1": "a", "key2": "b"}}
