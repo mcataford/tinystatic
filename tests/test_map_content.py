@@ -76,5 +76,5 @@ def test_map_content_includes_configured_keys(tmpdir, patched_cli_args):
         tinystatic()
 
     mock_step_args = mocked_step.call_args[0][0]
-    
+
     assert mock_step_args["content_map"] == {"post.md": {"key1": "a", "key2": "b"}}
