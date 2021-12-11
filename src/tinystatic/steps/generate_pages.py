@@ -1,3 +1,20 @@
+"""
+The generate pages step will crawl and read all the content files, and
+render the templates specified by the template parameter of the file
+frontmatter.
+
+The step exposes the stash.content_map metadata extracted by the map_content
+step.
+
+Depends on:
+    stash.cwd
+    stash.config.path.content_path
+    stash.config.steps.map_content.include
+    stash.content_map
+
+The results of this step are written to disk.
+"""
+
 from pathlib import Path
 
 from markdown2 import Markdown
@@ -46,6 +63,7 @@ def run(stash):
                     {
                         "title": header["title"],
                         "data": markdown_converter.convert(content),
+                        "site_metadata": stash.get("content_map", {}),
                     }
                 )
             )
