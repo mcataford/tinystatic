@@ -1,22 +1,31 @@
-from typing import Generator
+"""
+The generate pages step will crawl and read all the content files, and
+render the templates specified by the template parameter of the file
+frontmatter.
+
+The step exposes the stash.content_map metadata extracted by the map_content
+step.
+
+Depends on:
+    stash.cwd
+    stash.config.path.content_path
+    stash.config.steps.map_content.include
+    stash.content_map
+
+The results of this step are written to disk.
+"""
+
 from pathlib import Path
 
 from markdown2 import Markdown
 import frontmatter
 from jinja2 import Environment, FileSystemLoader
 
+from tinystatic.utils import get_content_item_paths
 from tinystatic.core.logger import get_logger
 
 STEP_NAME = "GeneratePagesStep"
 logger = get_logger(STEP_NAME)
-
-
-def _get_content(content_path: Path) -> Generator[Path, None, None]:
-    for content in Path(content_path).iterdir():
-        if content.suffix != ".md":
-            continue
-
-        yield content
 
 
 def run(stash):
@@ -36,7 +45,7 @@ def run(stash):
 
     count = 0
 
-    for content_item_path in _get_content(content_path):
+    for content_item_path in get_content_item_paths(content_path):
         relative_path = content_item_path.relative_to(content_path)
         target_path = Path(project_root, "dist", relative_path.with_suffix(".html"))
         target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -54,6 +63,7 @@ def run(stash):
                     {
                         "title": header["title"],
                         "data": markdown_converter.convert(content),
+                        "site_metadata": stash.get("content_map", {}),
                     }
                 )
             )

@@ -1,5 +1,6 @@
 from typing import Optional, Union
 from pathlib import Path
+import sys
 
 import toml
 
@@ -22,6 +23,8 @@ def load_configuration(*, project_root: Optional[Union[Path, str]] = Path.cwd())
 
     if not isinstance(project_root, Path):
         project_root = Path(project_root)
+
+    sys.path.insert(0, str(project_root))
 
     config_path = project_root.joinpath(CONFIGURATION_FILENAME)
 
